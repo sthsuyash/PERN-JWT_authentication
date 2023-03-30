@@ -1,7 +1,5 @@
 const db = require('../db')
-const { sign } = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const { JWT } = require('../constants')
 const jwtGenerator = require('../utils/jwtGenerator')
 
 // method to get all the users in db
@@ -80,14 +78,16 @@ exports.login = async (req, res) => {
                 message: 'Invalid credentials',
             })
         }
-        
+
         // give them the jwt token
         const token = jwtGenerator(user.rows[0].user_id);
+        res.json({ token });
 
-        return res.status(200).cookie('token', token, { httpOnly: true }).json({
-            success: true,
-            message: 'Logged in successfully',
-        })
+        // for cookie based authentication
+        // return res.status(200).cookie('token', token, { httpOnly: true }).json({
+        //     success: true,
+        //     message: 'Logged in successfully',
+        // })
 
     } catch (error) {
         console.log(error.message);
