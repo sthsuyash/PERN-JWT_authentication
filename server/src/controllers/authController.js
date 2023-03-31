@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
         // console.log(error.message);
         return res.status(401).json({
             success: false,
-            message: error.message,
+            message: error.message, // error.message is the error message from the validator
         })
     }
 }
@@ -89,6 +89,18 @@ exports.login = async (req, res) => {
         //     message: 'Logged in successfully',
         // })
 
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        })
+    }
+}
+
+exports.isVerify = async (req, res) => {
+    try {
+        res.json(true);
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({

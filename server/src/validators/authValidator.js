@@ -24,8 +24,10 @@ const email = check('user_email')
         }
     });
 
-// check if username is already taken
+// check if username is entered or not and if it is already in use
 const username = check('username')
+    .isLength({ min: 3 })
+    .withMessage('Please enter a valid username')
     .custom(async (value) => {
         const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [value]);
         if (rows.length > 0) {
