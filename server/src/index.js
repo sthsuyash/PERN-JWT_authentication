@@ -7,7 +7,12 @@ const cors = require('cors');
 
 app.use(express.json()) // req.body
 app.use(express.urlencoded({ extended: true })) // req.body
-app.use(cors());
+
+const corsOptions = {
+    origin: 'https://pern-jwt-authentication.vercel.app'
+};
+
+app.use(cors(corsOptions));
 
 // routes
 const routes = require('./routes');
