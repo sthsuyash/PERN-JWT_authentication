@@ -1,8 +1,11 @@
 import { Fragment, useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import axios from "axios";
+import { ToastContainer } from 'react-toastify';
+import { toastSuccess, toastError } from "../components/Toast";
 
-export default function Register({setAuth}) {
+export default function Register({ setAuth }) {
 
     // Create a state variable called inputs and a function called setInputs
     const [inputs, setInputs] = useState({
@@ -10,6 +13,8 @@ export default function Register({setAuth}) {
         username: "",
         password: ""
     });
+
+    const [error, setError] = useState({});
 
     // Destructure the inputs object
     const { user_email, username, password } = inputs;
@@ -24,22 +29,37 @@ export default function Register({setAuth}) {
     const onSubmitForm = async (e) => {
         e.preventDefault(); // Prevents the default behavior of the browser
 
-        try {
-            const body = { user_email, username, password };
-            const response = await fetch("http://localhost:3000/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
-            });
+        const error = validate(inputs);
+        if (error) {
+            setError(error);
+        }
 
-            const parseRes = await response.json();
-            // console.log(parseRes);
-            localStorage.setItem("token", parseRes.token);
-            setAuth(true);
+        if (Object.keys(error).length === 0) {
+            try {
+                const body = { user_email, username, password };
+                const response = await axios.post("http://localhost:3000/api/auth/register", body);
+                const parseRes = await response.data;
 
+                if (parseRes.token) {
+                    localStorage.setItem("token", parseRes.token);
+                    setAuth(true);
+                    toastSuccess('Registered successfully!');
 
-        } catch (err) {
-            console.error(err.message);
+                } else {
+                    setAuth(false);
+                }
+
+            } catch (err) {
+                console.error(err.message);
+                if (err.response.status === 422) {
+                    const error = err.response.data.errors;
+                    const errorMessage = error.map((error) => error.msg).join(' & ');
+                    toastError(errorMessage);
+                }
+                else {
+                    toastError(error);
+                }
+            }
         }
     };
 
@@ -47,7 +67,7 @@ export default function Register({setAuth}) {
         <Fragment>
 
             <div className="container">
-                <h1>Register</h1>
+                <h1 className="text-center my-5">Register</h1>
                 <p>Register a new account</p>
 
                 <Form onSubmit={onSubmitForm}>
@@ -63,9 +83,14 @@ export default function Register({setAuth}) {
                         <Form.Text className="text-muted">
                             We'll never share your email with anyone else.
                         </Form.Text>
+                        {error.user_email && (
+                            <p className="text-danger">
+                                {errors.user_email}
+                            </p>
+                        )}
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Group className="mb-3" controlId="formBasicUsername">
                         <Form.Label>Username</Form.Label>
                         <Form.Control
                             type="text"
@@ -74,6 +99,11 @@ export default function Register({setAuth}) {
                             value={username}
                             onChange={(e) => onChange(e)}
                         />
+                        {error.username && (
+                            <p className="text-danger">
+                                {error.username}
+                            </p>
+                        )}
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -85,11 +115,19 @@ export default function Register({setAuth}) {
                             value={password}
                             onChange={(e) => onChange(e)}
                         />
+                        {error.password && (
+                            <p className="text-danger">
+                                {error.password}
+                            </p>
+                        )}
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">
+                    <Button
+                        variant="primary"
+                        type="submit">
                         Submit
                     </Button>
+                    <ToastContainer />
                 </Form>
             </div>
         </Fragment>
