@@ -10,7 +10,7 @@ export default function Dashboard({ setAuth }) {
 
     const getName = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/dashboard/", {
+            const response = await axios.get("https://pern-jwt-authentication-api.vercel.app/api/dashboard/", {
                 headers: { token: localStorage.token }
             });
             const parseRes = response.data;
@@ -24,7 +24,7 @@ export default function Dashboard({ setAuth }) {
 
     const getEmail = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/dashboard/", {
+            const response = await axios.get("https://pern-jwt-authentication-api.vercel.app/api/dashboard/", {
                 headers: { token: localStorage.token }
             });
 

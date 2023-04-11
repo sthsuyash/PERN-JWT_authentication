@@ -37,7 +37,7 @@ export default function Register({ setAuth }) {
         if (Object.keys(error).length === 0) {
             try {
                 const body = { user_email, username, password };
-                const response = await axios.post("http://localhost:3000/api/auth/register", body);
+                const response = await axios.post("https://pern-jwt-authentication-api.vercel.app/api/auth/register", body);
                 const parseRes = await response.data;
 
                 if (parseRes.token) {

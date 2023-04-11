@@ -19,7 +19,7 @@ export default function App() {
 
   const isAuth = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/is-verify", {
+      const response = await fetch("https://pern-jwt-authentication-api.vercel.app/api/auth/is-verify", {
         method: "GET",
         headers: { token: localStorage.token }
       });

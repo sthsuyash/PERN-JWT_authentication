@@ -36,7 +36,7 @@ export default function Login({ setAuth }) {
         if (Object.keys(error).length === 0) {
             try {
                 const body = { user_email, password };
-                const response = await axios.post("http://localhost:3000/api/auth/login", body);
+                const response = await axios.post("https://pern-jwt-authentication-api.vercel.app/api/auth/login", body);
                 const parseRes = response.data;
                 // console.log(parseRes);
                 if (parseRes.token) {
