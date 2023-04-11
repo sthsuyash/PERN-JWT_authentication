@@ -20,8 +20,8 @@ exports.getUser = async (req, res) => {
 exports.editUser = async (req, res) => {
     try {
         const { username, user_email } = req.body;
-        const user = await db.query("UPDATE users SET username = $1, user_email = $2 WHERE user_id = $3 RETURNING *", [username, user_email, req.user]);
-        res.json(user.rows[0]);
+        const user = await db.query("UPDATE users SET username = $1, user_email = $2 WHERE user_id = $3 RETURNING user_id, username, user_email", [username, user_email, req.user]);
+        res.send(user.rows[0]);
 
     } catch (error) {
         res.status(500).json({
