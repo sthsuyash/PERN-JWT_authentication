@@ -5,6 +5,10 @@ const dashBoardRoutes = require('./dashboardRoute')
 
 // initialize routes
 
+app.use('/', (req, res) => {
+  res.send("<h1>Api</h1>");
+});
+
 // auth routes
 app.use('/auth', authRoutes);
 
